@@ -1,13 +1,8 @@
-//arduino Uno
-
-//#include "SoftwareSerial.h"
 #include <Ethernet.h>
-#include <EthernetUdp.h>   // pin 13,12,11,10 and 4 can NOT be used; they are used by the WIFI shield ??? QUESTION for pin 4...?
-#define RX 3  //  connected to the TX of the ESP8266
-#define TX 2 // connected to the RX of the ESP8266
+#include <EthernetUdp.h>   // pin 13,12,11,10 and 4 can NOT be used; they are used by the WIFI shield 
 #define relayOnder 7   // used in the future for relay valve
 #define relayBoven 8   // used in the future for relay valve
-#define inputRegenput A0  // analogue input for sensor
+#define inputRegenput A0  // analogue input for sensor (third wire)
 #define DEBUG true
 
 #define localPort 1235  // local port to listen on for incoming UDP messages 
@@ -20,7 +15,7 @@ int vorigeWaterstand;
 unsigned long lastCheck = 0; // hold timer for checking water values
 
 EthernetUDP Udp;
-EthernetClient client; // moet ik testen om te zien of dit geen conflict geeft met de UDP class
+EthernetClient client; 
 IPAddress ip(192, 168, 15, 49);
 IPAddress gateway(192, 168, 15, 1);
 IPAddress subnet(255, 255, 255, 0);
