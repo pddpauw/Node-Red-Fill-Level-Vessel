@@ -1,0 +1,547 @@
+[
+    {
+        "id": "48440b3a.563c44",
+        "type": "tab",
+        "label": "Regenput",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "da8ca13b.b1328",
+        "type": "udp out",
+        "z": "48440b3a.563c44",
+        "name": "",
+        "addr": "192.168.15.49",
+        "iface": "",
+        "port": "1235",
+        "ipv": "udp4",
+        "outport": "8001",
+        "base64": false,
+        "multicast": "false",
+        "x": 1290,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "7f2e3956.9e7a28",
+        "type": "udp in",
+        "z": "48440b3a.563c44",
+        "name": "",
+        "iface": "",
+        "port": "1234",
+        "ipv": "udp4",
+        "multicast": "false",
+        "group": "",
+        "datatype": "utf8",
+        "x": 120,
+        "y": 320,
+        "wires": [
+            [
+                "885b892f.bcbf08",
+                "fcb61c6f.0df3f",
+                "f7a35224.8c016"
+            ]
+        ]
+    },
+    {
+        "id": "885b892f.bcbf08",
+        "type": "function",
+        "z": "48440b3a.563c44",
+        "name": "output modifier",
+        "func": "var str = msg.payload;\nvar temp = str.split(/[:=]/);\nvar type = temp[0];\nvar sensor = temp[1];\nvar value = temp[2];\nvar msg1 = null;\nvar msg2 = null;\nvar msg3 = null;\nvar msgreset=null;\n\nif(type==\"REPLY\"){\n    if (sensor==\"level\"){ // send to first output\n        flow.set(\"waterlevel\",value);\n        msg1 = {payload:value};\n    }\n    if (sensor==\"valveOnder\"){  // send to second outptu\n       flow.set(\"statusventielOnder\",value);\n       msg2 = {payload:value};\n    }\n    if (sensor==\"valveBoven\"){ // send to first output\n        flow.set(\"statusventielBoven\",value);\n        msg3 = {payload:value};\n    }\n}\nmsgreset={payload:\"reset\"}\nif (msg.payload===\"\"){\n    msgreset = {payload:0};\n}\nreturn[msg1,msg2,msg3];\n\n",
+        "outputs": 3,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 320,
+        "wires": [
+            [
+                "cdd7a45.5e96358"
+            ],
+            [
+                "e68fdde8.804a4"
+            ],
+            [
+                "9213c277.9c46"
+            ]
+        ]
+    },
+    {
+        "id": "cdd7a45.5e96358",
+        "type": "ui_gauge",
+        "z": "48440b3a.563c44",
+        "name": "",
+        "group": "cf2cef0a.0f1d",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "stand regenput",
+        "label": "units",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "400",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 720,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "3589e70a.297e98",
+        "type": "ui_switch",
+        "z": "48440b3a.563c44",
+        "name": "",
+        "label": "auto ventiel tonnen",
+        "tooltip": "",
+        "group": "ca926851.048458",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "",
+        "style": "",
+        "onvalue": "automatisch",
+        "onvalueType": "str",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "niet automatisch",
+        "offvalueType": "str",
+        "officon": "",
+        "offcolor": "",
+        "x": 350,
+        "y": 460,
+        "wires": [
+            [
+                "e68fdde8.804a4",
+                "9213c277.9c46"
+            ]
+        ]
+    },
+    {
+        "id": "2317e182.13929e",
+        "type": "inject",
+        "z": "48440b3a.563c44",
+        "name": "",
+        "props": [
+            {
+                "p": "payload",
+                "v": "niet automatisch",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "v": "startup",
+                "vt": "string"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "0.6",
+        "topic": "startup",
+        "payload": "niet automatisch",
+        "payloadType": "str",
+        "x": 150,
+        "y": 240,
+        "wires": [
+            [
+                "bde9b07c.424c5"
+            ]
+        ]
+    },
+    {
+        "id": "a0fe0b28.1ba568",
+        "type": "inject",
+        "z": "48440b3a.563c44",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "startup",
+        "payload": "automatisch",
+        "payloadType": "str",
+        "x": 140,
+        "y": 200,
+        "wires": [
+            [
+                "bde9b07c.424c5"
+            ]
+        ]
+    },
+    {
+        "id": "bde9b07c.424c5",
+        "type": "function",
+        "z": "48440b3a.563c44",
+        "name": "arduino request",
+        "func": "var msg1=null;\nvar msg2=null;\nmsg1={payload:\"SEND=valveBoven:close\"};\nmsg2={payload:\"SEND=valveOnder:close\"};\nflow.set(\"statusventielBoven\",\"close\");\nflow.set(\"statusventielOnder\",\"close\");\nreturn [msg1,msg2];",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 414.98268127441406,
+        "y": 77.98961639404297,
+        "wires": [
+            [
+                "da8ca13b.b1328"
+            ],
+            [
+                "d5995277.fa94b"
+            ]
+        ]
+    },
+    {
+        "id": "6fc7787a.220538",
+        "type": "function",
+        "z": "48440b3a.563c44",
+        "name": "request level",
+        "func": "if (msg.payload == 1){\n    msg.payload = \"REQUEST=level\"\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 20,
+        "wires": [
+            [
+                "da8ca13b.b1328"
+            ]
+        ]
+    },
+    {
+        "id": "8fd33a8a.16d608",
+        "type": "inject",
+        "z": "48440b3a.563c44",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "300",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "120",
+        "topic": "",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 110,
+        "y": 40,
+        "wires": [
+            [
+                "6fc7787a.220538"
+            ]
+        ]
+    },
+    {
+        "id": "c51f8dcd.433be",
+        "type": "ui_text",
+        "z": "48440b3a.563c44",
+        "group": "ca926851.048458",
+        "order": 3,
+        "width": "2",
+        "height": 1,
+        "name": "",
+        "label": "ventiel Onder",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 970,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "fd25a09.2f6d86",
+        "type": "ui_button",
+        "z": "48440b3a.563c44",
+        "name": "valveOnder_off",
+        "group": "ca926851.048458",
+        "order": 5,
+        "width": 2,
+        "height": 1,
+        "passthru": false,
+        "label": "{{msg.label}}",
+        "tooltip": "",
+        "color": "black",
+        "bgcolor": "{{msg.background}}",
+        "icon": "",
+        "payload": "SEND=valveOnder:close",
+        "payloadType": "str",
+        "topic": "",
+        "x": 975.9999580383301,
+        "y": 500.99995136260986,
+        "wires": [
+            [
+                "da8ca13b.b1328"
+            ]
+        ]
+    },
+    {
+        "id": "1d6ee3b0.29332c",
+        "type": "ui_button",
+        "z": "48440b3a.563c44",
+        "name": "valveOnder_on",
+        "group": "ca926851.048458",
+        "order": 4,
+        "width": 2,
+        "height": 1,
+        "passthru": false,
+        "label": "{{msg.label}}",
+        "tooltip": "",
+        "color": "black",
+        "bgcolor": "{{msg.background}}",
+        "icon": "",
+        "payload": "SEND=valveOnder:open",
+        "payloadType": "str",
+        "topic": "",
+        "x": 976.9999580383301,
+        "y": 461.9999465942383,
+        "wires": [
+            [
+                "da8ca13b.b1328"
+            ]
+        ]
+    },
+    {
+        "id": "e68fdde8.804a4",
+        "type": "function",
+        "z": "48440b3a.563c44",
+        "name": "ventielen_tonnen_onder_button_layout",
+        "func": "if (msg.payload==\"automatisch\"){\n    flow.set(\"statusventielentonnen_auto\",\"on\");\n}\nif (msg.payload==\"niet automatisch\"){\n        flow.set(\"statusventielentonnen_auto\",\"off\");\n}\n\nif(flow.get('statusventielentonnen_auto')==\"on\"){\n    if (flow.get('statusventielOnder')==\"open\"){\n        var msg1={enabled:false,label:\"\",background:\"green\"};\n        var msg2={enabled:false,label:\"\",background:\"white\"};\n        \n    }\n    if (flow.get('statusventielOnder')==\"close\"){\n        var msg1={enabled:false,label:\"\",background:\"white\"};\n        var msg2={enabled:false,label:\"\",background:\"red\"};\n        \n    }\n}\nif(flow.get('statusventielentonnen_auto')==\"off\"){\n    if (flow.get('statusventielOnder')==\"open\"){\n        var msg1={enabled:true,label:\"ON\",background:\"green\"};\n        var msg2={enabled:true,label:\"OFF\",background:\"grey\"};\n    }\n    if (flow.get('statusventielOnder')==\"close\"){\n        var msg1={enabled:true,label:\"ON\",background:\"grey\"};\n        var msg2={enabled:true,label:\"OFF\",background:\"red\"};\n        \n    }\n}\nreturn [msg1,msg2];\n",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 650,
+        "y": 460,
+        "wires": [
+            [
+                "1d6ee3b0.29332c"
+            ],
+            [
+                "fd25a09.2f6d86"
+            ]
+        ]
+    },
+    {
+        "id": "51a2b93.10d5848",
+        "type": "function",
+        "z": "48440b3a.563c44",
+        "name": "automatisch",
+        "func": "if (msg.payload==\"reset\"){\nmsg.payload=\"automatisch\";\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 130,
+        "y": 460,
+        "wires": [
+            [
+                "3589e70a.297e98"
+            ]
+        ]
+    },
+    {
+        "id": "d5995277.fa94b",
+        "type": "delay",
+        "z": "48440b3a.563c44",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "2",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "outputs": 1,
+        "x": 600,
+        "y": 100,
+        "wires": [
+            [
+                "da8ca13b.b1328"
+            ]
+        ]
+    },
+    {
+        "id": "9213c277.9c46",
+        "type": "function",
+        "z": "48440b3a.563c44",
+        "name": "ventielen_tonnen_boven_button_layout",
+        "func": "if (msg.payload==\"automatisch\"){\n    flow.set(\"statusventielentonnen_auto\",\"on\");\n}\nif (msg.payload==\"niet automatisch\"){\n        flow.set(\"statusventielentonnen_auto\",\"off\");\n}\n\nif(flow.get('statusventielentonnen_auto')==\"on\"){\n    if (flow.get('statusventielBoven')==\"open\"){\n        var msg1={enabled:false,label:\"\",background:\"green\"};\n        var msg2={enabled:false,label:\"\",background:\"white\"};\n        \n    }\n    if (flow.get('statusventielBoven')==\"close\"){\n        var msg1={enabled:false,label:\"\",background:\"white\"};\n        var msg2={enabled:false,label:\"\",background:\"red\"};\n        \n    }\n}\nif(flow.get('statusventielentonnen_auto')==\"off\"){\n    if (flow.get('statusventielBoven')==\"open\"){\n        var msg1={enabled:true,label:\"ON\",background:\"green\"};\n        var msg2={enabled:true,label:\"OFF\",background:\"grey\"};\n    }\n    if (flow.get('statusventielBoven')==\"close\"){\n        var msg1={enabled:true,label:\"ON\",background:\"grey\"};\n        var msg2={enabled:true,label:\"OFF\",background:\"red\"};\n        \n    }\n}\nreturn [msg1,msg2];\n",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 640,
+        "wires": [
+            [
+                "f8b54ae6.cf0b18"
+            ],
+            [
+                "27803322.b8f0fc"
+            ]
+        ]
+    },
+    {
+        "id": "27803322.b8f0fc",
+        "type": "ui_button",
+        "z": "48440b3a.563c44",
+        "name": "valveBoven_off",
+        "group": "ca926851.048458",
+        "order": 8,
+        "width": 2,
+        "height": 1,
+        "passthru": false,
+        "label": "{{msg.label}}",
+        "tooltip": "",
+        "color": "black",
+        "bgcolor": "{{msg.background}}",
+        "icon": "",
+        "payload": "SEND=valveBoven:close",
+        "payloadType": "str",
+        "topic": "",
+        "x": 975.9999580383301,
+        "y": 680.9999513626099,
+        "wires": [
+            [
+                "da8ca13b.b1328"
+            ]
+        ]
+    },
+    {
+        "id": "ac56dc33.de986",
+        "type": "ui_text",
+        "z": "48440b3a.563c44",
+        "group": "ca926851.048458",
+        "order": 6,
+        "width": "2",
+        "height": 1,
+        "name": "",
+        "label": "ventiel Boven",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 980,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "f8b54ae6.cf0b18",
+        "type": "ui_button",
+        "z": "48440b3a.563c44",
+        "name": "valveBoven_on",
+        "group": "ca926851.048458",
+        "order": 7,
+        "width": 2,
+        "height": 1,
+        "passthru": false,
+        "label": "{{msg.label}}",
+        "tooltip": "",
+        "color": "black",
+        "bgcolor": "{{msg.background}}",
+        "icon": "",
+        "payload": "SEND=valveBoven:open",
+        "payloadType": "str",
+        "topic": "",
+        "x": 976.9999580383301,
+        "y": 641.9999465942383,
+        "wires": [
+            [
+                "da8ca13b.b1328"
+            ]
+        ]
+    },
+    {
+        "id": "fcb61c6f.0df3f",
+        "type": "function",
+        "z": "48440b3a.563c44",
+        "name": "resetrequest",
+        "func": "if(msg.payload==\"REGENPUT:live!!\"){\n    if(flow.get(\"RegenputOffline\")==true);    \n        var msg1 = {payload:\"reset\"};\n}\nreturn msg1;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 380,
+        "wires": [
+            [
+                "51a2b93.10d5848"
+            ]
+        ]
+    },
+    {
+        "id": "f7a35224.8c016",
+        "type": "debug",
+        "z": "48440b3a.563c44",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 390,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "cf2cef0a.0f1d",
+        "type": "ui_group",
+        "name": "inputs",
+        "tab": "60bddff9.ecd65",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "ca926851.048458",
+        "type": "ui_group",
+        "name": "regentonnen",
+        "tab": "60bddff9.ecd65",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "60bddff9.ecd65",
+        "type": "ui_tab",
+        "name": "Bewatering",
+        "icon": "fa-tree",
+        "order": 17,
+        "disabled": false,
+        "hidden": false
+    }
+]
