@@ -1,5 +1,5 @@
 # Node-Red-Fill-Level-Vessel
-Node Red is polling and Arduino (connected via Ethernet) that will measure the fluid via pressure sensor
+Node Red is polling an Arduino (connected via Ethernet) that will measure the fluid via pressure sensor
 
 Arduino has Ethernet shield, and connected to a pressure sensor.  This pressure sensor is fed by 12-24vdc, and outputs on third wire 0-5vdc. This is read on the Analogue input of the Arduino.
 
